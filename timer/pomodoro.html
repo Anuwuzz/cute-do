@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pomodoro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css" />
+    <style>
+        body {
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            background-color: #5ad679;
+        }
+
+        
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; 
+        }
+
+        .container {
+            top: 20px;
+            text-align: center;
+        }   
+
+        .timer-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .timer {
+            background-color: #5ad679;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .time-display {
+            display: flex;
+            padding: 10px;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .time-display div {
+            display: inline-block;
+            padding: 0 10px;
+        }
+
+        .time-display .colon {
+            padding: 0;
+            font-size: 48px;
+            font-weight: normal;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button{
+            display: inline-block; 
+            background: rgb(0, 0, 0); 
+            color: white; 
+            font-size: 1.25rem; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 10px; 
+            text-decoration: none; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        button:hover{
+            background: linear-gradient(90deg, #ff5722, #ff7f50); 
+            transform: scale(1.05); 
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="main-content" id="pomodoro-section">
+            <div class="container">
+                <div class="timer-section">
+                    <!-- Session Timer comes first now -->
+                    <div class="timer">
+                        <h2>Session</h2>
+                        <div class="time-display">
+                            <div class="minutes" id="session-minutes">25</div>:<div class="seconds" id="session-seconds">00</div>
+                        </div>
+                        <div class="controls">
+                            <button onclick="decreaseSession()">-</button>
+                            <button onclick="increaseSession()">+</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Break Timer now comes after Session -->
+                    <div class="timer">
+                        <h2>Break</h2>
+                        <div class="time-display">
+                            <div class="minutes" id="break-minutes">05</div>:<div class="seconds" id="break-seconds">00</div>
+                        </div>
+                        <div class="controls">
+                            <button onclick="decreaseBreak()">-</button>
+                            <button onclick="increaseBreak()">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button onclick="startTimer()">Start</button>
+                    <button onclick="stopTimer()">Stop Music</button>
+                    <button onclick="resetTimer()">Reset</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let breakMinutes = 5;
+        let sessionMinutes = 25;
+        let interval;
+
+        function updateDisplay() {
+            document.getElementById('break-minutes').textContent = breakMinutes.toString().padStart(2, '0');
+            document.getElementById('break-seconds').textContent = "00";
+            document.getElementById('session-minutes').textContent = sessionMinutes.toString().padStart(2, '0');
+            document.getElementById('session-seconds').textContent = "00";
+        }
+
+        function increaseBreak() {
+            breakMinutes++;
+            updateDisplay();
+        }
+
+        function decreaseBreak() {
+            if (breakMinutes > 1) {
+                breakMinutes--;
+            }
+            updateDisplay();
+        }
+
+        function increaseSession() {
+            sessionMinutes++;
+            updateDisplay();
+        }
+
+        function decreaseSession() {
+            if (sessionMinutes > 1) {
+                sessionMinutes--;
+            }
+            updateDisplay();
+        }
+
+        function startTimer() {
+            clearInterval(interval);
+            let sessionTime = sessionMinutes * 60;
+            interval = setInterval(() => {
+                let minutes = Math.floor(sessionTime / 60);
+                let seconds = sessionTime % 60;
+                document.getElementById('session-minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('session-seconds').textContent = seconds.toString().padStart(2, '0');
+                if (sessionTime <= 0) {
+                    clearInterval(interval);
+                    playMusic();
+                }
+                sessionTime--;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(interval);
+        }
+
+        function resetTimer() {
+            stopTimer();
+            sessionMinutes = 25;
+            breakMinutes = 5;
+            updateDisplay();
+        }
+
+        function playMusic() {
+            let audio = new Audio("sounds/alarm.mp3");
+            audio.play();
+        }
+
+        updateDisplay();
+        </script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
+</body>
+</html>
