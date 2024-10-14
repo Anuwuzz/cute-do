@@ -9,7 +9,7 @@
     padding: 0;
     margin: 0;
     font-family: sans-serif;
-    background-color: #5ad679;
+    background-color: #6296f0;
   }
   
   .outer_wrapper {
@@ -274,7 +274,7 @@
   }
   
   polygon.eyes {
-    fill: rgb(1, 143, 96);
+    fill: #6296f0;
   }
   
   polygon,
